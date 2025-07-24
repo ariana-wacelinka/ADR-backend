@@ -1,5 +1,3 @@
-# Cosas que no queremos en Docker
 node_modules
-.env
 .git
 README.md

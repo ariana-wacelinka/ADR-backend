@@ -1,17 +1,21 @@
 require('dotenv').config();
 
 const express = require('express');
-const cors = require('cors');
 const mysql = require('mysql2/promise');
 
 const app = express();
-module.exports = app; // si lo usás en tests, mantenelo
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({ origin: '*', credentials: true })); // reemplaza tu middleware manual
 
-// ---------- Pool MySQL ----------
+const cors = require('cors');
+app.use(cors({
+    origin: 'http://anuncios.brazilsouth.cloudapp.azure.com',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    credentials: true
+}));
+
+
 const pool = mysql.createPool({
     host: process.env.MYSQL_HOST || 'localhost',
     user: process.env.MYSQL_USER || 'root',
@@ -23,7 +27,6 @@ const pool = mysql.createPool({
     queueLimit: 0
 });
 
-// Test de conexión
 (async () => {
     try {
         const [rows] = await pool.query('SELECT NOW() AS now');
@@ -33,7 +36,6 @@ const pool = mysql.createPool({
     }
 })();
 
-// ---------- Handlers ----------
 const getAllAnnouncements = async (_req, res) => {
     try {
         const [rows] = await pool.query('SELECT * FROM announcements');
@@ -126,14 +128,9 @@ const updateAnnouncement = async (req, res) => {
     }
 };
 
-// ---------- Rutas ----------
 app.delete('/announcements', deleteAnnouncement);
 app.get('/announcements', getAllAnnouncements);
 app.post('/announcements', createAnnouncement);
 app.put('/announcements/:id', updateAnnouncement);
 
-// Escucha (descomenta si lo corrés standalone)
-//// const port = process.env.PORT || 1337;
-//// app.listen(port, () => {
-////   console.log(`Servidor corriendo en http://localhost:${port}`);
-//// });
+module.exports = app;
