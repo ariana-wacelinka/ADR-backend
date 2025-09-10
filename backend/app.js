@@ -128,9 +128,9 @@ const updateAnnouncement = async (req, res) => {
     }
 };
 
-app.delete('/announcements', deleteAnnouncement);
-app.get('/announcements', getAllAnnouncements);
-app.post('/announcements', createAnnouncement);
-app.put('/announcements/:id', updateAnnouncement);
+app.delete('/api/announcements', deleteAnnouncement);
+app.get('/api/announcements', getAllAnnouncements);
+app.post('/api/announcements', createAnnouncement);
+app.put('/api/announcements/:id', updateAnnouncement);
 
 module.exports = app;
